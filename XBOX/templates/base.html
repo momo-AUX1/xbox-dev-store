@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Xbox Devstore{% endblock %}</title>
+    <meta content="Xbox Dev Store" property="og:title">
+    <meta content="An Xbox Dev Mode Store for all your favorite apps and emulators, allowing users to share and discover emulators and tools for their XBOX." property="og:description">
+    <meta content="https://xboxdev.store/" property="og:url">
+    <meta content="{% static 'images/banner.jpg' %}" property="og:image">
+  	<meta name="description" content="An Xbox Dev Mode Store for all your favorite apps and emulators, allowing users to share and discover emulators and tools for their XBOX.">
+    <link rel="shortcut icon" href="{% static 'images/xbox-logo.png' %}" type="image/x-icon">
+    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  	<link rel="manifest" href="{% url 'manifest' %}">
+  	<script src="{% static 'js/pwa.js' %}"></script>
+    <script src="{% static 'js/htmx.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+  	<meta name="theme-color" content="#ffffff">
+  	<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Xbox Devstore",
+      "url": "https://xboxdev.store/"
+    }
+    </script>
+</head>
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+
+    <nav class="navbar bg-white shadow-lg sticky top-0 z-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4" onclick="window.location.href = '/'">
+                <img src="{% static 'images/xbox-logo.png' %}" alt="Xbox Logo" class="h-8">
+                <span class="text-xl font-semibold text-gray-800 dark:text-gray-200">Xbox Devstore</span>
+            </div>
+            <div class="pc-hidden md:flex space-x-6">
+                <!--<a href="/" class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-green-400">Home</a>-->
+                {% for category in categories %}
+                    <a href="#" class="text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-green-400" hx-get="{% url 'filter_category' category.id %}" hx-target="#main" hx-swap="innerHTML">{{ category.name }}</a>
+                {% endfor %}
+            </div>
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-gray-800 focus:outline-none dark:text-gray-200" onclick="toggleNavbar()" aria-label="navigation-toggle">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 space-y-3">
+            <!--<a href="/" class="block text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-green-400">Home</a>-->
+            {% for category in categories %}
+                <a href="#" class="block text-gray-800 hover:text-green-600 dark:text-gray-200 dark:hover:text-green-400" hx-get="{% url 'filter_category' category.id %}" hx-target="#main" hx-swap="innerHTML">{{ category.name }}</a>
+            {% endfor %}
+        </div>
+    </nav>
+
+    <main id="main" class="container mx-auto px-4 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer py-4 mt-8">
+        <div class="container mx-auto text-center">
+            <img src="{% static 'images/xbox-logo.png' %}" alt="Xbox Logo" class="h-8 mx-auto">
+            <div class="footer-text mt-2">© <span id="current-year"></span> Xbox Devstore. All rights reserved.</div>
+            <a href="{% url 'sitemap_json' %}" class="text-green-600 hover:text-green-800">JSON api</a>
+        </div>
+    </footer>
+
+    <button id="back-to-top" aria-label="Back to Top" class="fixed bottom-8 right-8 z-50 p-3 bg-gray-700 text-white rounded-full shadow-lg hover:bg-gray-600">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+        </svg>
+    </button>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        document.getElementById('back-to-top').addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    </script>
+</body>
+</html>
